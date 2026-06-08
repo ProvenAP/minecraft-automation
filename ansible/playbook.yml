@@ -1,0 +1,29 @@
+---
+- name: Configure Minecraft server
+  hosts: minecraft
+  become: yes
+  vars:
+    mc_server_port: 25565
+  tasks:
+    - name: Update apt cache and install Docker
+      apt:
+        name: docker.io
+        update_cache: yes
+
+    - name: Install Python Docker SDK
+      pip:
+        name: docker
+
+    - name: Pull Minecraft server Docker image
+      docker_image:
+        name: itzg/minecraft-server
+        source: pull
+
+    - name: Run Minecraft Docker container
+      docker_container:
+        name: mc
+        image: itzg/minecraft-server
+        state: started
+        restart_policy: unless-stopped
+        ports:
+          - "{{ mc_server_port }}:25565"
