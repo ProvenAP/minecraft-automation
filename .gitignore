@@ -3,3 +3,4 @@ terraform.tfstate*
 *.key
 .terraform/
 ansible/hosts.ini
+.terraform.lock.hcl
