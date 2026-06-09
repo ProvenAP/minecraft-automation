@@ -10,20 +10,28 @@
         name: docker.io
         update_cache: yes
 
-    - name: Install Python Docker SDK
-      pip:
+    - name: Ensure Docker is started and enabled
+      systemd:
         name: docker
+        state: started
+        enabled: yes
+
+    - name: Install pip3
+      apt:
+        name: python3-pip
+        state: present
 
     - name: Pull Minecraft server Docker image
-      docker_image:
-        name: itzg/minecraft-server
-        source: pull
+      command: docker pull itzg/minecraft-server
+      register: pull_result
+      changed_when: "'Image is up to date' not in pull_result.stdout"
+
+    - name: Remove any existing container with the same name
+      command: docker rm -f mc
+      ignore_errors: yes
+      changed_when: false
 
     - name: Run Minecraft Docker container
-      docker_container:
-        name: mc
-        image: itzg/minecraft-server
-        state: started
-        restart_policy: unless-stopped
-        ports:
-          - "{{ mc_server_port }}:25565"
+      command: docker run -d --restart unless-stopped --name mc -e EULA=TRUE -p {{ mc_server_port }}:25565 itzg/minecraft-server
+      register: container_result
+      changed_when: true
