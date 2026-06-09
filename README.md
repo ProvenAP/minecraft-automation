@@ -1,60 +1,104 @@
-
 # Fully Automated Minecraft Server on AWS
 
 ## Background
-This project provisions an EC2 instance using Terraform, then it configures it using Ansible to run a Minecraft server inside a Docker container. The entire process is automated – no manual AWS Console clicks or SSH into the server.
+
+This project provisions an EC2 instance using Terraform, then configures it using Ansible to run a Minecraft server inside a Docker container. The entire process is automated—no manual AWS Console usage or SSH access to the server is required.
 
 ## Architecture Diagram
+
 ```mermaid
 graph TD
     A[User] --> B[Set AWS credentials]
     B --> C[Run deploy.sh]
-    C --> D[Terraform: Provision EC2 + SG]
+    C --> D[Terraform: Provision EC2 + Security Group]
     D --> E[Ansible: Install Docker]
-    E --> F[Run Minecraft container]
+    E --> F[Run Minecraft Container]
     F --> G[nmap shows port open]
+```
 
 ## Requirements
 
-Operating System: Linux, macOS, or Windows WSL
+### Operating System
 
-Tools:
+* Linux
+* macOS
+* Windows (WSL)
 
-	1. terraform >= 1.5
+### Tools
 
-	2. ansible >= 8.0
+* Terraform >= 1.5
+* Ansible >= 8.0
+* Git
+* Nmap
 
-	3. git
+### AWS Requirements
 
-	4. nmap
+* AWS Academy Learner Lab with an active session
+* AWS credentials:
 
-AWS Academy Learner Lab with active session
+  * AWS_ACCESS_KEY_ID
+  * AWS_SECRET_ACCESS_KEY
+  * AWS_SESSION_TOKEN
 
-Credentials: Copy AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN from the "AWS Details" tab
+These credentials can be obtained from the AWS Details tab in AWS Academy.
 
-## Setup/commands
+## Setup and Commands
 
-1. Clone this repository.
+### 1. Clone the Repository
 
-	`git clone https://github.com/ProvenAP/minecraft-automation.git`
-	`cd minecraft-automation`
+```bash
+git clone https://github.com/ProvenAP/minecraft-automation.git
+cd minecraft-automation
+```
 
-2. Run `source scripts/set_aws_credentials.sh` and enter your AWS Academy credentials.
-3. Run `chmod +x deploy.sh && ./deploy.sh`.
+### 2. Configure AWS Credentials
 
-In summary it is initializing Terraform and creates the EC2 Instance as well as the security group with it.
-It will save the instance's public IP and execute the Ansible playbook to install Docker and start the minecraft container.
+```bash
+source scripts/set_aws_credentials.sh
+```
+
+Enter the AWS Academy credentials when prompted.
+
+### 3. Deploy the Infrastructure
+
+```bash
+chmod +x deploy.sh
+./deploy.sh
+```
+
+This script will:
+
+* Initialize Terraform
+* Create the EC2 instance and security group
+* Save the instance's public IP address
+* Execute the Ansible playbook
+* Install Docker
+* Start the Minecraft server container
 
 ## Verification
-After deployment, run 
-(replace <instance-ip> with the IP shown in the output):
-`nmap -sV -Pn -p T:25565 <instance-ip>` to confirm the Minecraft server is running.
 
-You should get something like:
+After deployment, run:
 
+```bash
+nmap -sV -Pn -p T:25565 <instance-ip>
+```
+
+Replace `<instance-ip>` with the public IP displayed by the deployment script.
+
+Expected output:
+
+```text
 PORT      STATE SERVICE   VERSION
 25565/tcp open  minecraft Minecraft 26.1.2
+```
+
+This confirms that the Minecraft server is running and reachable.
 
 ## Resources
-- [itzg/docker-minecraft-server](https://hub.docker.com/r/itzg/minecraft-server)
-- [Terraform AWS Provider](https://registry.terraform.io/providers/hashicorp/aws/latest)
+
+* https://hub.docker.com/r/itzg/minecraft-server
+* https://registry.terraform.io/providers/hashicorp/aws/latest
+
+## Assignment Information
+
+This repository was created for the CS 312 System Administration Course Project Part 2.
