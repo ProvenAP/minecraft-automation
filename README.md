@@ -2,7 +2,7 @@
 
 ## Background
 
-This project provisions an EC2 instance using Terraform, then configures it using Ansible to run a Minecraft server inside a Docker container. The entire process is automated—no manual AWS Console usage or SSH access to the server is required.
+This project provisions an EC2 instance using Terraform, then configures it using Ansible to run a Minecraft server inside a Docker container. The entire process is automated, meaning no manual AWS Console usage or SSH access to the server is required.
 
 ## Architecture Diagram
 
